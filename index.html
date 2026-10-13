@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nomes do Brasil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <h1>Nomes do Brasil</h1>
+    <p>Descubra quantas pessoas têm o seu nome, em que década ele bombou e onde ele é mais comum — com dados do Censo do IBGE.</p>
+  </header>
+
+  <main class="container">
+    <form id="form-busca" class="busca">
+      <label for="campo-busca" class="sr-only">Digite um nome</label>
+      <input type="text" id="campo-busca" placeholder="Digite um primeiro nome, ex.: Ana" autocomplete="off" maxlength="40">
+      <button type="submit" id="botao-buscar">Buscar</button>
+    </form>
+
+    <div class="sugestoes">
+      <span>Experimente:</span>
+      <button type="button" class="chip" data-nome="Maria">Maria</button>
+      <button type="button" class="chip" data-nome="Enzo">Enzo</button>
+      <button type="button" class="chip" data-nome="Valentina">Valentina</button>
+      <button type="button" class="chip" data-nome="Sebastiao">Sebastião</button>
+      <button type="button" class="chip" data-nome="Ariel">Ariel</button>
+    </div>
+
+    <section id="resultado" aria-live="polite"></section>
+  </main>
+
+  <footer class="rodape">
+    Dados: <a href="https://servicodados.ibge.gov.br/api/docs/nomes" target="_blank" rel="noopener">API de Nomes do IBGE</a> (Censo 2010).
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
