@@ -3,6 +3,22 @@
 
 const API_BASE = "https://servicodados.ibge.gov.br/api/v2/censos/nomes";
 
+// ===== Supabase (banco de dados dos favoritos) =====
+// Cole aqui os dados de Project Settings → API do seu projeto Supabase.
+// A chave "publishable" é feita para ficar no frontend; quem protege a tabela são as políticas (RLS).
+const SUPABASE_URL = "https://hhrntlmnwtyziaocmgxm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_kW3C0XYkQ_lSbR2RCpGnYQ_zu55l1zg";
+
+let db = null;
+try {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (erro) {
+  console.error("Supabase não configurado:", erro);
+}
+
+// Guarda o último nome pesquisado, para o botão "Favoritar" saber o que salvar
+let ultimoResultado = null;
+
 // Códigos IBGE das unidades da federação -> nome do estado
 const ESTADOS = {
   11: "Rondônia", 12: "Acre", 13: "Amazonas", 14: "Roraima", 15: "Pará",
@@ -108,9 +124,17 @@ function mostrarResultado(dados, totalFem, totalMasc, porEstado) {
       </div>`;
   }).join("");
 
+  ultimoResultado = {
+    nome: nomeExibido,
+    extra: `${formatar(total)} pessoas · pico nos ${rotuloPeriodo(pico.periodo)}`
+  };
+
   area.innerHTML = `
     <article class="cartao">
-      <h2>${nomeExibido}</h2>
+      <div class="cabecalho-resultado">
+        <h2>${nomeExibido}</h2>
+        <button type="button" id="botao-favoritar" class="botao-favoritar">☆ Favoritar</button>
+      </div>
       <p class="subtitulo">Pessoas registradas com esse nome no Censo 2010</p>
       <div class="numeros">
         <div class="numero"><strong>${formatar(total)}</strong><span>pessoas no Brasil</span></div>
@@ -127,6 +151,8 @@ function mostrarResultado(dados, totalFem, totalMasc, porEstado) {
     ${montarCartaoSexo(totalFem, totalMasc)}
     ${montarCartaoEstados(porEstado)}
   `;
+
+  document.getElementById("botao-favoritar").addEventListener("click", salvarFavorito);
 }
 
 function montarCartaoSexo(fem, masc) {
@@ -174,6 +200,114 @@ function montarCartaoEstados(porEstado) {
       <p class="nota">Proporção de pessoas com o nome a cada 100 mil habitantes do estado.</p>
     </article>`;
 }
+
+// ===== Favoritos: CRUD no Supabase =====
+
+function avisoFavoritos(texto) {
+  document.getElementById("aviso-favoritos").textContent = texto;
+}
+
+// CREATE — salva o nome pesquisado na tabela "favoritos"
+async function salvarFavorito() {
+  if (!db || !ultimoResultado) return;
+  const botao = document.getElementById("botao-favoritar");
+  botao.disabled = true;
+
+  const { error } = await db
+    .from("favoritos")
+    .insert({ nome_item: ultimoResultado.nome, dados_extra: ultimoResultado.extra });
+
+  if (error) {
+    console.error(error);
+    // 23505 = violação de "unique": o nome já está salvo
+    if (error.code === "23505") {
+      botao.textContent = "★ Já está nos favoritos";
+    } else {
+      botao.disabled = false;
+      avisoFavoritos("Não foi possível salvar agora. Tente de novo em instantes.");
+    }
+    return;
+  }
+
+  botao.textContent = "★ Favoritado";
+  listarFavoritos();
+}
+
+// READ — busca todos os favoritos, do mais recente para o mais antigo
+async function listarFavoritos() {
+  if (!db) {
+    avisoFavoritos("Favoritos indisponíveis: o banco de dados não está configurado.");
+    return;
+  }
+
+  const { data, error } = await db
+    .from("favoritos")
+    .select("*")
+    .order("criado_em", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    avisoFavoritos("Não foi possível carregar os favoritos agora.");
+    return;
+  }
+
+  renderizarFavoritos(data);
+}
+
+// DELETE — remove um favorito pelo id
+async function removerFavorito(id) {
+  const { error } = await db.from("favoritos").delete().eq("id", id);
+  if (error) {
+    console.error(error);
+    avisoFavoritos("Não foi possível excluir agora. Tente de novo.");
+    return;
+  }
+  listarFavoritos();
+}
+
+// Desenha a lista na tela. Usa textContent (e não innerHTML) porque os dados vêm
+// do banco, que qualquer visitante pode alterar — assim ninguém injeta HTML na página.
+function renderizarFavoritos(lista) {
+  const ul = document.getElementById("lista-favoritos");
+  ul.innerHTML = "";
+
+  if (lista.length === 0) {
+    avisoFavoritos("Nenhum favorito ainda. Busque um nome e clique em ☆ Favoritar.");
+    return;
+  }
+  avisoFavoritos("");
+
+  lista.forEach((fav) => {
+    const li = document.createElement("li");
+
+    const info = document.createElement("button");
+    info.type = "button";
+    info.className = "favorito-info";
+    info.title = "Ver dados deste nome";
+    const nome = document.createElement("strong");
+    nome.textContent = fav.nome_item;
+    const extra = document.createElement("span");
+    extra.textContent = fav.dados_extra || "";
+    info.append(nome, extra);
+    info.addEventListener("click", () => {
+      document.getElementById("campo-busca").value = fav.nome_item;
+      buscarNome(fav.nome_item);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    const excluir = document.createElement("button");
+    excluir.type = "button";
+    excluir.className = "botao-excluir";
+    excluir.textContent = "Excluir";
+    excluir.addEventListener("click", () => removerFavorito(fav.id));
+
+    li.append(info, excluir);
+    ul.appendChild(li);
+  });
+}
+
+// Carrega os favoritos assim que a página abre
+listarFavoritos();
 
 // Eventos: envio do formulário (botão ou Enter) e chips de sugestão
 document.getElementById("form-busca").addEventListener("submit", (evento) => {
