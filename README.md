@@ -24,7 +24,7 @@ Aplicação web que mostra a popularidade de um nome no Brasil: quantas pessoas 
 - Mensagens amigáveis para nome não encontrado, entrada inválida ou API fora do ar
 
 ## Como executar localmente
-1. Clone: `git clone https://github.com/mateusitibal-byte/DesafioBootcamp2``
+1. Clone: `git clone https://github.com/mateusitibal-byte/DesafioBootcamp2`
 2. Abra o arquivo `index.html` no navegador
 
 ## Links
