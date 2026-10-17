@@ -1,7 +1,7 @@
 # Nomes do Brasil
 
 ## Autor
-Mateus Itibal – Matrícula 22502039
+Mateus Itibal Gomes de Freitas – Matrícula 22502039
 
 ## Descrição
 Aplicação web que mostra a popularidade de um nome no Brasil: quantas pessoas o têm, em que década ele foi mais usado, a divisão entre feminino e masculino e os estados onde é mais comum. Útil para curiosos, futuros pais escolhendo nome para o bebê e para quem gosta de dados sobre o Brasil.
@@ -24,9 +24,9 @@ Aplicação web que mostra a popularidade de um nome no Brasil: quantas pessoas 
 - Mensagens amigáveis para nome não encontrado, entrada inválida ou API fora do ar
 
 ## Como executar localmente
-1. Clone: `git clone https://github.com/mateusitibal-byte/DesafioBootcamp2`
+1. Clone: `git clone https://github.com/seu-usuario/bootcamp2-app`
 2. Abra o arquivo `index.html` no navegador
 
 ## Links
-- **Aplicação no ar (GitHub Pages):** https://mateusitibal-byte.github.io/DesafioBootcamp2/
+- **Aplicação no ar (GitHub Pages):** https://seu-usuario.github.io/bootcamp2-app/
 - **Repositório:** https://github.com/mateusitibal-byte/DesafioBootcamp2
