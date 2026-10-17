@@ -256,6 +256,7 @@ async function listarFavoritos() {
 
 // DELETE — remove um favorito pelo id
 async function removerFavorito(id) {
+  if (!confirm("Excluir este favorito?")) return;
   const { error } = await db.from("favoritos").delete().eq("id", id);
   if (error) {
     console.error(error);
