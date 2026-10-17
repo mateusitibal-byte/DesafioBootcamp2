@@ -1,0 +1,16 @@
+# Nada disso é necessário para a aplicação rodar dentro do container
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.md
+prints/
+rascunhos/
+banco.sql
+Dockerfile
+.dockerignore
+*.zip
+*.log
+Thumbs.db
+.DS_Store
