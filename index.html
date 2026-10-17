@@ -29,12 +29,20 @@
     </div>
 
     <section id="resultado" aria-live="polite"></section>
+
+    <section class="cartao favoritos">
+      <h3>⭐ Meus favoritos</h3>
+      <p id="aviso-favoritos" class="nota" aria-live="polite"></p>
+      <ul id="lista-favoritos" class="lista-favoritos"></ul>
+    </section>
   </main>
 
   <footer class="rodape">
     Dados: <a href="https://servicodados.ibge.gov.br/api/docs/nomes" target="_blank" rel="noopener">API de Nomes do IBGE</a> (Censo 2010).
   </footer>
 
+  <!-- Biblioteca do Supabase (cria a variável global "supabase") -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
   <script src="script.js"></script>
 </body>
 </html>
