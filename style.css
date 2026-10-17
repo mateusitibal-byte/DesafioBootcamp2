@@ -1,0 +1,194 @@
+:root {
+  --fundo: #f6f5fb;
+  --cartao: #ffffff;
+  --texto: #1f1d2b;
+  --suave: #6b6880;
+  --roxo: #6d28d9;
+  --roxo-claro: #ede9fe;
+  --rosa: #db2777;
+  --azul: #2563eb;
+  --erro-fundo: #fef2f2;
+  --erro-texto: #b91c1c;
+  --borda: #e4e2ee;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+}
+
+/* Topo */
+.topo {
+  background: linear-gradient(135deg, #6d28d9, #9333ea);
+  color: #fff;
+  padding: 48px 16px 64px;
+  text-align: center;
+}
+.topo h1 { font-size: 2.2rem; margin-bottom: 8px; }
+.topo p { max-width: 560px; margin: 0 auto; opacity: .9; }
+
+.container {
+  max-width: 760px;
+  margin: -32px auto 0;
+  padding: 0 16px 48px;
+}
+
+/* Busca */
+.busca {
+  display: flex;
+  gap: 8px;
+  background: var(--cartao);
+  padding: 8px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(60, 20, 120, .12);
+}
+.busca input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  font-size: 1.05rem;
+  padding: 12px;
+  outline: none;
+  background: transparent;
+}
+.busca button {
+  border: none;
+  background: var(--roxo);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 24px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.busca button:hover { background: #5b21b6; }
+.busca button:disabled { opacity: .6; cursor: wait; }
+
+.sugestoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 24px;
+  color: var(--suave);
+  font-size: .9rem;
+}
+.chip {
+  border: 1px solid var(--borda);
+  background: var(--cartao);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: .9rem;
+  color: var(--texto);
+}
+.chip:hover { border-color: var(--roxo); color: var(--roxo); }
+
+/* Cartões de resultado */
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.cartao h2 { font-size: 1.8rem; color: var(--roxo); }
+.cartao h3 { font-size: 1.05rem; margin-bottom: 16px; }
+.subtitulo { color: var(--suave); margin-bottom: 20px; }
+
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.numero {
+  background: var(--roxo-claro);
+  border-radius: 10px;
+  padding: 14px;
+}
+.numero strong { display: block; font-size: 1.4rem; }
+.numero span { font-size: .85rem; color: var(--suave); }
+
+/* Gráfico de barras por década */
+.grafico { display: flex; flex-direction: column; gap: 8px; }
+.linha-grafico {
+  display: grid;
+  grid-template-columns: 72px 1fr 90px;
+  align-items: center;
+  gap: 10px;
+  font-size: .9rem;
+}
+.barra-fundo { background: var(--roxo-claro); border-radius: 6px; height: 18px; }
+.barra {
+  background: var(--roxo);
+  height: 100%;
+  border-radius: 6px;
+  transition: width .6s ease;
+}
+.barra.pico { background: var(--rosa); }
+.valor { text-align: right; color: var(--suave); font-variant-numeric: tabular-nums; }
+
+/* Divisão por sexo */
+.divisao {
+  display: flex;
+  height: 28px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.divisao .fem { background: var(--rosa); }
+.divisao .masc { background: var(--azul); }
+.legenda { display: flex; justify-content: space-between; font-size: .9rem; flex-wrap: wrap; gap: 8px; }
+.legenda .f { color: var(--rosa); font-weight: 600; }
+.legenda .m { color: var(--azul); font-weight: 600; }
+
+/* Estados */
+.estados { list-style: none; counter-reset: pos; }
+.estados li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borda);
+}
+.estados li:last-child { border-bottom: none; }
+.estados li::before {
+  counter-increment: pos;
+  content: counter(pos) "º";
+  color: var(--roxo);
+  font-weight: 700;
+  width: 32px;
+}
+.estados .uf { flex: 1; }
+.nota { font-size: .8rem; color: var(--suave); margin-top: 8px; }
+
+/* Estados de carregamento e erro */
+.carregando { text-align: center; color: var(--suave); padding: 32px; }
+.mensagem-erro {
+  background: var(--erro-fundo);
+  color: var(--erro-texto);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.rodape {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--suave);
+  padding: 24px 16px;
+}
+.rodape a { color: var(--roxo); }
+
+@media (max-width: 480px) {
+  .topo h1 { font-size: 1.7rem; }
+  .linha-grafico { grid-template-columns: 56px 1fr 72px; font-size: .8rem; }
+}
